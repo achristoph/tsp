@@ -1,22 +1,18 @@
-require 'rspec'
-
-class TSP
+class TspRunner
   attr_accessor :cities, :distance_table
 
   def initialize(cities)
     @cities = cities
-    @distance_table = Array.new(cities.size) { Array.new(cities.size) }
+    @distance_table = Array.new(cities.size) { [] }
+    compute
   end
 
-  def compute
-    distance_table
+  def comput
     cities.each_with_index do |c, i|
       cities.each_with_index do |d, j|
-        distance_table[i][j] = distance(c, d)
-        p "#{i},#{j} - #{c},#{d} #{distance(c, d)}"
+        self.distance_table[i][j] = distance(c, d)
       end
     end
-    distance_table
   end
 
   def distance(a, b)
