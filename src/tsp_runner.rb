@@ -1,25 +1,37 @@
-class TspRunner
-  attr_accessor :cities, :distance_table
+require_relative "tsp_table"
 
+class TspRunner
+  attr_accessor :cities, :table, :permutations, :optimal_path, :optimal_dist
   def initialize(cities)
-    @cities = cities
-    @distance_table = Array.new(cities.size) { [] }
-    compute
+    @cities       = cities
+    @table        = TspTable.new(cities)
+    @permutations = set_permutations(cities)
+    @optimal_path #= permutations.unshift #sets the "0123..n" permutation as default
+    @optimal_dist #= table.evaluate(optimal_path)
+    initialize_optimums
   end
 
-  def comput
-    cities.each_with_index do |c, i|
-      cities.each_with_index do |d, j|
-        self.distance_table[i][j] = distance(c, d)
-      end
+  def initialize_optimums
+    self.optimal_path = permutations.unshift #sets the "0123..n" permutation as default
+    self.optimal_dist = table.evaluate
+  end
+
+  def solve
+    permutations.each do |permutation|
+      increment_optimal(permutation)
+    end
+    [optimal_path, optimal_dist]
+  end
+
+  def set_permutations(cities)
+    (0...cities.length).to_a.permutation.to_a.map{|perm| perm.map(&:to_s).reduce(&:+)}
+  end
+
+  def increment_optimal(perm)
+    distance = table.permutation=(perm)
+    if (distance < optimal_dist)
+      self.optimal_path = perm
+      self.optimal_dist = distance
     end
   end
-
-  def distance(a, b)
-    x2, x1 = b.first, a.first
-    y2, y1 = b.last, a.last
-    Math.sqrt((x2-x1)**2 + (y2-y1)**2)
-  end
 end
-
-
