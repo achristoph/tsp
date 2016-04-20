@@ -6,14 +6,18 @@ class TspRunner
     @cities       = cities
     @table        = TspTable.new(cities)
     @permutations = set_permutations(cities)
-    @optimal_path #= permutations.unshift #sets the "0123..n" permutation as default
-    @optimal_dist #= table.evaluate(optimal_path)
+    @optimal_path 
+    @optimal_dist 
     initialize_optimums
   end
 
   def initialize_optimums
-    self.optimal_path = permutations.unshift #sets the "0123..n" permutation as default
-    self.optimal_dist = table.evaluate
+    # set optimals to tables initial values
+    self.optimal_path = table.permutation
+    self.optimal_dist = table.eval
+
+    # delete default table permutation from permutation collection
+    permutations.delete(optimal_path)
   end
 
   def solve
@@ -28,7 +32,7 @@ class TspRunner
   end
 
   def increment_optimal(perm)
-    distance = table.permutation=(perm)
+    distance = table.new_permutation(perm)
     if (distance < optimal_dist)
       self.optimal_path = perm
       self.optimal_dist = distance

@@ -3,8 +3,7 @@ require_relative "matrix_transform"
 
 class TspTable
   include MatrixTransform, TspEvaluator
-  attr_accessor :cities, :distance_table
-  attr_reader   :permutation
+  attr_accessor :cities, :distance_table, :permutation
 
   def initialize(cities)
     @cities         = cities
@@ -27,14 +26,17 @@ class TspTable
     Math.sqrt((x2-x1)**2 + (y2-y1)**2)
   end
 
-  def permutation=(new_perm)
-    self.distance_table = transform.(distance_table, permutation, new_perm)
-    @permutation = new_perm
-    evaluate
+  def new_permutation(new_perm)
+    self.distance_table = transform(distance_table, permutation, new_perm)
+    self.permutation = new_perm
+    eval
   end
 
-  def evaluate
-  #   self.permutation = _permutation
-    evaluate.(self.distance_table)
+  def eval
+    evaluate(distance_table)
   end
 end
+
+# java, business intl
+# -shop your way
+# -integrated retail
